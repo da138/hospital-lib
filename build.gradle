@@ -1,0 +1,112 @@
+plugins {
+    id 'java-library' // 当build java 库的时候用这个，否则用 id 'java'
+    id 'idea'
+    id 'jacoco' // 代码测试覆盖率
+    id 'maven-publish'
+}
+
+
+description = 'hospital-lib'
+group = 'com.sdrin.lib'
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.apache.httpcomponents:httpclient:4.5.12"
+    implementation "org.bouncycastle:bcpkix-jdk15on:1.65"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.5.2"
+    testImplementation "com.google.code.gson:gson:2.8.6"
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+
+// 发布测试覆盖率，目前这个在 腾讯云上表现一般
+jacocoTestReport {
+    reports {
+        xml.enabled false
+        csv.enabled false
+        html.enabled true
+    }
+}
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version)
+    }
+}
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = "sources"
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+    exclude '**/*.fxml', '**/*.css', '**/*.csv', '**/*.ps1', '**/*.json', '**/*.jpg', '**/*.png'
+}
+
+javadoc {
+    options {
+        memberLevel = JavadocMemberLevel.PRIVATE
+        windowTitle = "${rootProject.name} ${version} "
+        encoding = 'UTF-8'
+        charSet 'UTF-8'
+        author = true
+        use = true
+    }
+    doFirst {
+        javadoc.title = "上海石指健康医院lib库"
+        javadoc.options.docTitle = javadoc.title
+    }
+}
+// 连带 源码发布到 s3 maven，非常方便，
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourceJar // 发布包含源码
+            artifact javadocJar
+            pom {
+                name = "基础纯公共库"
+                description = "上海石指的基础纯公共库"
+                developers {
+                    developer {
+                        id = "keryhu"
+                        name = "胡树铭"
+                        email = "keryhu@hotmail.com"
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name 'maven-repo'
+            credentials(AwsCredentials) {
+                accessKey project.findProperty("s3.key")
+                secretKey project.findProperty("s3.secret")
+            }
+            if (project.version.endsWith('-SNAPSHOT')) {
+                url "s3://com.sdrin.maven.s3.cn-northwest-1.amazonaws.com.cn/snapshots"
+            } else {
+                url "s3://com.sdrin.maven.s3.cn-northwest-1.amazonaws.com.cn/releases"
+            }
+        }
+    }
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
