@@ -7,6 +7,9 @@
 1. AES 加密、解密。
 2. http 请求报文内容数字签名。
 3. RAS2 非对称加密，解密。
+4. 等。
+
+具体可参考：  [接口文档](http://simulate-his.sdrin.com/docs/index.html)
 
 # 如何安装
 ```
@@ -23,9 +26,7 @@
 implementation 'com.sdrin.lib:hospital-lib:1.0.5'
 ```
 
-
-
 # 如有技术问题
 请联系上海石指项目负责人，或邮件 keryhu@hotmail.com
 
-# 欢迎同行参与
+# 欢迎同行参与共建
