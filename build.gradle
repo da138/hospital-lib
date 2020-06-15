@@ -8,6 +8,8 @@ plugins {
 
 description = 'hospital-lib'
 group = 'com.sdrin.lib'
+version = '1.0.3'
+
 repositories {
     jcenter()
     mavenCentral()
@@ -76,13 +78,13 @@ javadoc {
 // 连带 源码发布到 s3 maven，非常方便，
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            from components.java
+        gpr(MavenPublication) {
+            from(components.java)
             artifact sourceJar // 发布包含源码
             artifact javadocJar
             pom {
-                name = "基础纯公共库"
-                description = "上海石指的基础纯公共库"
+                name = "医院his公共库"
+                description = "上海石指健康医院公共库"
                 developers {
                     developer {
                         id = "keryhu"
@@ -95,18 +97,15 @@ publishing {
     }
     repositories {
         maven {
-            name 'maven-repo'
-            credentials(AwsCredentials) {
-                accessKey project.findProperty("s3.key")
-                secretKey project.findProperty("s3.secret")
-            }
-            if (project.version.endsWith('-SNAPSHOT')) {
-                url "s3://com.sdrin.maven.s3.cn-northwest-1.amazonaws.com.cn/snapshots"
-            } else {
-                url "s3://com.sdrin.maven.s3.cn-northwest-1.amazonaws.com.cn/releases"
+            name 'sdrin-hospital-lib'
+            url = uri("https://maven.pkg.github.com/keryhu/hospital-lib")
+            credentials {
+                /**Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN**/
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
             }
         }
     }
 }
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11

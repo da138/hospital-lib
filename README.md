@@ -5,5 +5,16 @@
 2. http 请求报文内容数字签名。
 3. RAS2 非对称加密，解密。
 
+# 如何安装
+```
+<dependency>
+  <groupId>com.sdrin.lib</groupId>
+  <artifactId>hospital-lib</artifactId>
+  <version>1.0.1</version>
+</dependency>
+```
+
+
+
 # 如有技术问题
 请联系上海石指项目负责人，或邮件 keryhu@hotmail.com
