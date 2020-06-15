@@ -114,3 +114,4 @@ fabric.properties
 hs_err_pid*
 
 /gradle.properties
+/publish.sh

@@ -4,6 +4,8 @@
 
 package com.sdrin.lib.hospital.util.encry;
 
+import com.sdrin.lib.hospital.domain.SHttpRequest;
+import com.sdrin.lib.hospital.domain.SHttpResponse;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -39,7 +41,7 @@ import static com.sdrin.lib.hospital.config.Constant.CHARSET;
  *
  * @author 胡树铭
  */
-public class RSAUtils {
+public class RSAUtil {
     // MAX_DECRYPT_BLOCK应等于密钥长度/8（1byte=8bit），所以当密钥位数为2048时，最大解密长度应为256.
     //密钥算法
     public static final String ALGORITHM_RSA = "RSA";
@@ -61,7 +63,6 @@ public class RSAUtils {
      * 产生 rsa key, 这里的私钥是，pkcs1 格式，返回的是字节形，这样便于存储在数据库，它比string格式好。
      *
      * @return 返回私有和公有的 rsa key
-     * @throws Exception 意外
      */
     public static Map<String, byte[]> initKey() {
         KeyPairGenerator kpg;
@@ -212,11 +213,12 @@ public class RSAUtils {
     }
 
     /**
-     * 签名，使用 SHA256withRSA , 可以参考：https://8gwifi.org/RSAFunctionality?rsasignverifyfunctions=rsasignverifyfunctions&keysize=2048
+     * 签名，使用 SHA256withRSA , 可以参考：
      *
      * @param privateKey 使用私钥签名,字节，
      * @param plain_text 签名前的纯文本
      * @return 签名后的数据，base64 格式。
+     * @see <a href="https://8gwifi.org/RSAFunctionality?rsasignverifyfunctions=rsasignverifyfunctions&keysize=2048">测试链接</a>
      */
     public static String signWithRsa256(byte[] privateKey, String plain_text) {
         Signature privateSignature;
@@ -233,13 +235,14 @@ public class RSAUtils {
     }
 
     /**
-     * 验证签名 ， 使用 utf-8 编码, 可以查看:https://8gwifi.org/RSAFunctionality?rsasignverifyfunctions=rsasignverifyfunctions&keysize=2048
-     * 验证，注意上述网站没有使用 utf-8 编码，所以验证时，不要使用中文，但是正式环境下可以使用中文。
+     * 验证签名，使用 utf-8 编码, 可以查看:
      *
      * @param plain_text 原始字符串，签名之前的字符串
      * @param signedData 签名后的字符串，默认是：SHA256withRSA 签名
      * @param publicKey  公钥，发送方拥有的私钥匹配的公钥，不要混淆了。
      * @return 返回验证签名的结果。
+     * @see <a href="https://8gwifi.org/RSAFunctionality?rsasignverifyfunctions=rsasignverifyfunctions&keysize=2048">测试链接</a>
+     * 验证，注意上述网站没有使用 utf-8 编码，所以验证时，不要使用中文，但是正式环境下可以使用中文。
      */
     public static boolean verifyWithRsa256(byte[] publicKey, String plain_text, String signedData) {
         if (plain_text == null || signedData == null || publicKey == null) {
@@ -352,6 +355,53 @@ public class RSAUtils {
      */
     public static String convertKeyByteToStr(byte[] key) {
         return org.apache.commons.codec.binary.Base64.encodeBase64String(key);
+    }
+
+
+    /**
+     * 对请求body进行数字签名，这里只是数字签名，并没有加密。
+     *
+     * @param request    被数字签名前的请求body
+     * @param privateKey 私钥
+     */
+    public static void sign(SHttpRequest request, byte[] privateKey) {
+        // 此数字签名后的密文。
+        String signed = signWithSha3AndRsa256(privateKey, DigitUtil.digit(request));
+        request.setSign(signed);
+    }
+
+    /**
+     * 验证发送方发送的内容，验证传输的内容有没有被修改，验证发送方是不是 曾经发给己方公钥的一方，所以这里使用的是发送方的公钥。
+     *
+     * @param request   请求内容，
+     * @param publicKey 发送方共享的公钥，非己方生成的公钥
+     * @return 如果验证通过，却是是发送方，则返回true，否则false
+     */
+    public static boolean verify(SHttpRequest request, byte[] publicKey) {
+        return verifyWithSha3AndRsa256(publicKey, DigitUtil.digit(request), request.getSign());
+    }
+
+    /**
+     * 对请求body进行数字签名，这里只是数字签名，并没有加密。
+     *
+     * @param response   被数字签名前的请求body
+     * @param privateKey 私钥
+     */
+    public static void sign(SHttpResponse response, byte[] privateKey) {
+        // 此数字签名后的密文。
+        String signed = signWithSha3AndRsa256(privateKey, DigitUtil.digit(response));
+        response.setSign(signed);
+    }
+
+    /**
+     * 验证发送方返回的内容，验证传输的内容有没有被修改，验证发送方是不是 曾经发给己方公钥的一方，所以这里使用的是发送方的公钥。
+     *
+     * @param response  请求返回内容，
+     * @param publicKey 发送方共享的公钥，非己方生成的公钥
+     * @return 如果验证通过，却是是发送方，则返回true，否则false
+     */
+    public static boolean verify(SHttpResponse response, byte[] publicKey) {
+        return verifyWithSha3AndRsa256(publicKey, DigitUtil.digit(response), response.getSign());
     }
 
     /**

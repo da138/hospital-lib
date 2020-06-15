@@ -31,10 +31,10 @@ public class AESUtil {
      */
     private static final String ALGORITHM = "AES";
 
-
     /**
      * 生成256位字节随机密钥
      *
+     * @param key 自定义随机字符串，用于生成aes密钥。
      * @return 返回随机密钥
      */
     private static SecretKey getKey(String key) {
@@ -99,19 +99,5 @@ public class AESUtil {
 
     public static String decryptTo(String cipherText, String key) {
         return new String(decryptToBytes(cipherText, key));
-    }
-
-
-    public static void main(String[] args) throws UnsupportedEncodingException {
-        String key = "12312378i";
-        String s = convertSecretKeyToStr(getKey(key));
-        System.out.println(getKey(key).getEncoded().length);
-        System.out.println(s);
-        System.out.println(s.length());
-
-        String plain = "上海石指(sdrin.com)你好,886";
-        String cipherText = encrypt(plain, key);
-        System.out.println(" 原字符串为： " + plain + " , 加密后为： " + cipherText);
-        System.out.println("解密后原文是: " + decryptTo(cipherText, key));
     }
 }
