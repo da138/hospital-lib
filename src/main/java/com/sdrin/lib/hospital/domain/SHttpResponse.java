@@ -9,16 +9,13 @@ package com.sdrin.lib.hospital.domain;
  * 上海石指(健康)科技有限公司 sdrin.com 2020/6/7 1:01 下午
  * <p>
  * 在进行和上海石指慧眼系统进行交互时，如果需要rsa签名和加密，则此为提交的request body，
- * 可以参考：
+ * 可以参考：http://simulate-his.sdrin.com/docs/index.html#_4_数字签名和数据加密
  *
  * @author 胡树铭
- * @see <a href="http://simulate-his.sdrin.com/docs/index.html#_4_数字签名和数据加密">参考链接</a>
  */
 public class SHttpResponse {
     /**
-     * 返回码，详见：
-     *
-     * @see <a href="http://simulate-his.sdrin.com/docs/index.html#_6_api_公共错误码">参考链接</a>
+     * 返回码，详见：http://simulate-his.sdrin.com/docs/index.html#_6_api_公共错误码
      */
     private String code;
     /**

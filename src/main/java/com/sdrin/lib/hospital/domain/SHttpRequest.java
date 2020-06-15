@@ -15,10 +15,9 @@ import static com.sdrin.lib.hospital.config.Constant.HTTP_VERSION;
  * 上海石指(健康)科技有限公司 sdrin.com 2020/6/7 1:01 下午
  * <p>
  * 在进行和上海石指慧眼系统进行交互时，如果需要rsa签名和加密，则此为提交的request body，
- * 可以参考：
+ * 可以参考：http://simulate-his.sdrin.com/docs/index.html#_4_数字签名和数据加密
  *
  * @author 胡树铭
- * @see <a href="http://simulate-his.sdrin.com/docs/index.html#_4_数字签名和数据加密">参考链接</a>
  */
 public class SHttpRequest {
     /**
@@ -38,9 +37,8 @@ public class SHttpRequest {
      */
     private String sign;
     /**
-     * 加密技术类型，默认是 AES+RSA2，是否加密由业务场景而定, 一般情况下，请求服务器是 {@code HTTPS} 则无需加密，否则涉及到敏感内容的均需加密：
-     *
-     * @see <a href="http://simulate-his.sdrin.com/docs/index.html#_4_2_数据加密">参考链接</a>
+     * 加密技术类型，默认是 AES+RSA2，是否加密由业务场景而定, 一般情况下，请求服务器是 {@code HTTPS} 则无需加密，
+     * 否则涉及到敏感内容的均需加密：参考 http://simulate-his.sdrin.com/docs/index.html#_4_2_数据加密
      */
     private String encType;
     /**

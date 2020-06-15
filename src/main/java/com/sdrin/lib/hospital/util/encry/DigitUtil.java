@@ -16,11 +16,10 @@ public class DigitUtil {
      * 取所有请求参数，不包括字节类型参数，如文件、字节流，剔除 sign 字段。
      * 剩下字段为：(appId、timestamp、letter、signType、encType、bizContent、version)，如果该段内容无需加密，则encType和letter为空。
      * 将筛选的参数按照第一个字符的键值 ASCII 码递增排序(字母升序排序)，
-     * 如果遇到相同字符则按 照第二个字符的键值 ASCII 码递增排序，以此类推。
+     * 如果遇到相同字符则按 照第二个字符的键值 ASCII 码递增排序，以此类推, 参考 http://simulate-his.sdrin.com/docs/index.html#_4_1_1_2_摘要
      *
      * @param request 被做摘要的参数
      * @return 返回摘要后的内容，string
-     * @see <a href="http://simulate-his.sdrin.com/docs/index.html#_4_1_1_2_摘要">摘要规则</a>
      */
     public static String digit(SHttpRequest request) {
         // 按照字典排序。

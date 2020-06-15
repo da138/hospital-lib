@@ -6,13 +6,13 @@ publish {
     userOrg = 'keryhu'// bintray 账户名。
     groupId = 'com.sdrin.lib'
     artifactId = 'hospital-lib'
-    publishVersion = '1.0.4'
+    publishVersion = '1.0.5'
     desc = '上海石指健康医院公共库'
     website = 'https://github.com/keryhu/hospital-lib'
 }
 description = 'hospital-lib'
 group = 'com.sdrin.lib'
-version = '1.0.4'
+version = '1.0.5'
 
 buildscript {
     repositories {
