@@ -1,7 +1,3 @@
 <component name="CopyrightManager">
-  <settings default="上海石指科技">
-    <module2copyright>
-      <element module="All" copyright="上海石指科技" />
-    </module2copyright>
-  </settings>
+  <settings default="apache2" />
 </component>

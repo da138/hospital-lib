@@ -31,3 +31,6 @@ implementation 'com.sdrin.lib:hospital-lib:1.0.5'
 请联系上海石指项目负责人，或邮件 keryhu@hotmail.com
 
 # 欢迎参与共建
+# Licence
+Hospital-lib is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html) .
+
